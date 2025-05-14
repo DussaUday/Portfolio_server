@@ -11,6 +11,7 @@ import certificateRoutes from './routes/certificates.js';
 import skillRoutes from './routes/skills.js';
 import resumeRoutes from './routes/resumes.js';
 import connectDB from './config/db.js';
+import fs from 'fs'; // Add fs to check file existence
 
 dotenv.config();
 const __dirname = path.resolve();
@@ -18,7 +19,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
@@ -31,6 +32,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Serve uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
@@ -44,11 +47,27 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/resumes', resumeRoutes);
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+const staticPath = path.join(__dirname, 'frontend', 'dist');
+const indexPath = path.join(staticPath, 'index.html');
 
-// Handle client-side routing (e.g., /admin)
+// Log if index.html is missing
+if (!fs.existsSync(indexPath)) {
+  console.error(`Error: index.html not found at ${indexPath}. Ensure frontend is built.`);
+}
+
+app.use(express.static(staticPath));
+
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error(`Error serving index.html: ${err.message}`);
+        res.status(500).json({ error: 'Failed to serve frontend' });
+      }
+    });
+  } else {
+    res.status(404).json({ error: 'Frontend not found. Please build the frontend.' });
+  }
 });
 
 // Socket.io
