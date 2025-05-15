@@ -1,8 +1,8 @@
-import path from "path";
-import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import path from 'path';
+import express from 'express';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import authRoutes from './routes/auth.js';
@@ -11,7 +11,7 @@ import certificateRoutes from './routes/certificates.js';
 import skillRoutes from './routes/skills.js';
 import resumeRoutes from './routes/resumes.js';
 import connectDB from './config/db.js';
-import fs from 'fs'; // Add fs to check file existence
+import fs from 'fs';
 
 dotenv.config();
 const __dirname = path.resolve();
@@ -32,9 +32,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-
-// Serve uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 connectDB();

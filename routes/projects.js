@@ -1,15 +1,8 @@
 import express from 'express';
-import multer from 'multer';
 import auth from '../middleware/auth.js';
 import Project from '../models/Project.js';
 
 const router = express.Router();
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
-});
-const upload = multer({ storage });
 
 // Get all projects
 router.get('/', async (req, res) => {
@@ -22,9 +15,8 @@ router.get('/', async (req, res) => {
 });
 
 // Add project
-router.post('/', auth, upload.single('image'), async (req, res) => {
-  const { title, description, projectLink, githubLink } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : '';
+router.post('/', auth, async (req, res) => {
+  const { title, description, projectLink, githubLink, image } = req.body;
 
   try {
     const project = new Project({ title, description, image, projectLink, githubLink });
@@ -37,13 +29,11 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 });
 
 // Update project
-router.put('/:id', auth, upload.single('image'), async (req, res) => {
-  const { title, description, projectLink, githubLink } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : undefined;
+router.put('/:id', auth, async (req, res) => {
+  const { title, description, projectLink, githubLink, image } = req.body;
 
   try {
-    const updateData = { title, description, projectLink, githubLink };
-    if (image) updateData.image = image;
+    const updateData = { title, description, projectLink, githubLink, image };
 
     const project = await Project.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!project) return res.status(404).json({ message: 'Project not found' });

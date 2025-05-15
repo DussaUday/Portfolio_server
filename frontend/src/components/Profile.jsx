@@ -27,7 +27,7 @@ function Profile() {
             </a>{' '}
             |{' '}
             <span className="font-semibold">GitHub:</span>{' '}
-            <a href="https://github.com/udaykrishna" className="text-primary hover:text-highlight cursor-glow">
+            <a href="https://github.com/DussaUday" className="text-primary hover:text-highlight cursor-glow">
               GitHub Profile
             </a>{' '}
             |{' '}

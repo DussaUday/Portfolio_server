@@ -29,7 +29,7 @@ function Projects() {
         {projects.map((project) => (
           <div
             key={project._id}
-            className="relative group bg-secondary/20 dark:bg-secondary/10 rounded-lg overflow-hidden shadow-lg transform transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-glow"
+            className="relative group bg-secondary/20 dark:bg-secondary/10 rounded-lg overflow-hidden shadow-lg transform transition-all duration-500 hover:scale-105 hover:shadow-2xl"
           >
             {project.image && (
               <img
@@ -51,7 +51,7 @@ function Projects() {
                     href={project.projectLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:text-highlight font-semibold transition-colors duration-300 cursor-glow"
+                    className="text-primary hover:text-highlight font-semibold transition-colors duration-300 z-10 relative"
                   >
                     View Project →
                   </a>
@@ -61,14 +61,14 @@ function Projects() {
                     href={project.githubLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-dark dark:text-secondary hover:text-highlight transition-colors duration-300 cursor-glow"
+                    className="flex items-center text-dark dark:text-secondary hover:text-highlight transition-colors duration-300 z-10 relative"
                   >
                     <FaGithub className="w-5 h-5 mr-2" /> GitHub
                   </a>
                 )}
               </div>
             </div>
-            <div className="absolute inset-0 bg-primary bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-primary bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-500 pointer-events-none"></div>
           </div>
         ))}
       </div>

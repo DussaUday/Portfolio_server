@@ -4,12 +4,12 @@ function Footer() {
   const socialLinks = [
     {
       name: 'WhatsApp',
-      href: 'https://wa.me/6304478845',
+      href: 'https://wa.me/+916304478845',
       icon: <FaWhatsapp className="w-6 h-6" />,
     },
     {
       name: 'GitHub',
-      href: 'https://github.com/udaykrishna',
+      href: 'https://github.com/DussaUday',
       icon: <FaGithub className="w-6 h-6" />,
     },
     {

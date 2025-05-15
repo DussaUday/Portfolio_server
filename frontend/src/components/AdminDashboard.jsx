@@ -11,7 +11,7 @@ function AdminDashboard({ setIsAuthenticated }) {
     description: '',
     projectLink: '',
     githubLink: '',
-    image: null,
+    image: '',
     date: '',
     name: '',
     proficiency: '',
@@ -61,7 +61,7 @@ function AdminDashboard({ setIsAuthenticated }) {
     } catch (error) {
       console.error('Error fetching resume:', error);
     }
-  };
+   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -75,10 +75,13 @@ function AdminDashboard({ setIsAuthenticated }) {
 
   const handleProjectSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    for (const key in formData) {
-      if (formData[key]) data.append(key, formData[key]);
-    }
+    const data = {
+      title: formData.title,
+      description: formData.description,
+      projectLink: formData.projectLink,
+      githubLink: formData.githubLink,
+      image: formData.image,
+    };
 
     try {
       const config = {
@@ -98,10 +101,11 @@ function AdminDashboard({ setIsAuthenticated }) {
 
   const handleCertificateSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    for (const key in formData) {
-      if (formData[key]) data.append(key, formData[key]);
-    }
+    const data = {
+      title: formData.title,
+      date: formData.date,
+      image: formData.image,
+    };
 
     try {
       const config = {
@@ -179,7 +183,7 @@ function AdminDashboard({ setIsAuthenticated }) {
       description: '',
       projectLink: '',
       githubLink: '',
-      image: null,
+      image: '',
       date: '',
       name: '',
       proficiency: '',
@@ -245,11 +249,12 @@ function AdminDashboard({ setIsAuthenticated }) {
             className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
           <input
-            type="file"
+            type="text"
             name="image"
-            onChange={handleFileChange}
-            className="p-3 border rounded-lg"
-            accept="image/*"
+            value={formData.image}
+            onChange={handleInputChange}
+            placeholder="Image URL"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <button
@@ -293,7 +298,7 @@ function AdminDashboard({ setIsAuthenticated }) {
                     description: project.description,
                     projectLink: project.projectLink || '',
                     githubLink: project.githubLink || '',
-                    image: null,
+                    image: project.image || '',
                   });
                   setEditing(project._id);
                 }}
@@ -334,11 +339,12 @@ function AdminDashboard({ setIsAuthenticated }) {
             required
           />
           <input
-            type="file"
+            type="text"
             name="image"
-            onChange={handleFileChange}
-            className="p-3 border rounded-lg"
-            accept="image/*"
+            value={formData.image}
+            onChange={handleInputChange}
+            placeholder="Image URL"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <button
@@ -368,7 +374,7 @@ function AdminDashboard({ setIsAuthenticated }) {
                   setFormData({
                     title: certificate.title,
                     date: certificate.date.split('T')[0],
-                    image: null,
+                    image: certificate.image || '',
                   });
                   setEditing(certificate._id);
                 }}
