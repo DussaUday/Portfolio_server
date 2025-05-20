@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { AiOutlineDownload } from 'react-icons/ai';
+import pdf from '../assets/resume.pdf';
 
 function Resume() {
-  const [resume, setResume] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [width, setWidth] = useState(1200);
 
   useEffect(() => {
-    const fetchResume = async () => {
+    setWidth(window.innerWidth);
+    
+    // Verify the resume exists
+    const checkResume = async () => {
+      setIsLoading(true);
       try {
-        const res = await axios.get('/api/resumes');
-        setResume(res.data);
+        const response = await fetch(pdf, { method: 'HEAD' });
+        if (!response.ok) {
+          throw new Error('Resume file not found');
+        }
       } catch (error) {
-        console.error('Error fetching resume:', error);
+        console.error('Error checking resume:', error);
+        setError('Resume is temporarily unavailable');
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchResume();
+    
+    checkResume();
   }, []);
 
   return (
@@ -24,20 +37,41 @@ function Resume() {
       <h2 className="text-4xl font-extrabold mb-8 text-center text-dark dark:text-secondary animate-slide-up">
         Resume
       </h2>
-      <p className="text-dark/80 dark:text-secondary/80 mb-6 text-center max-w-md mx-auto animate-slide-up">
-        Download my resume to explore my education, experience, and skills in detail.
-      </p>
+      
       <div className="text-center animate-slide-up">
-        {resume ? (
-          <a
-            href={resume.filePath}
-            download
-            className="inline-block bg-gradient-to-r from-primary to-accent text-white py-3 px-8 rounded-full font-semibold hover:bg-gradient-to-l transition-all duration-300 transform hover:scale-110 shadow-lg cursor-glow"
-          >
-            Download Resume
-          </a>
+        {isLoading ? (
+          <p className="text-dark/80 dark:text-secondary/80">Loading resume...</p>
+        ) : error ? (
+          <p className="text-red-500 dark:text-red-400">{error}</p>
         ) : (
-          <p className="text-dark/80 dark:text-secondary/80">No resume uploaded yet.</p>
+          <>
+            <div className="mb-6">
+              <a
+                href={pdf}
+                download="uday_Resume.pdf"
+                className="inline-flex items-center bg-gradient-to-r from-primary to-accent text-white py-3 px-8 rounded-full font-semibold hover:bg-gradient-to-l transition-all duration-300 transform hover:scale-110 shadow-lg cursor-glow"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <AiOutlineDownload className="mr-2" />
+                Download Resume (PDF)
+              </a>
+            </div>
+            
+            <p className="text-dark/80 dark:text-secondary/80 mb-4">
+              For complete resume view, please download it :)
+            </p>
+            
+            <iframe
+              src={pdf}
+              className="mx-auto border-2 border-gray-200"
+              style={{
+                width: width < 768 ? '100%' : '75%',
+                height: '75vh'
+              }}
+              title="Resume Preview"
+            />
+          </>
         )}
       </div>
     </section>
