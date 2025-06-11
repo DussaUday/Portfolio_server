@@ -11,94 +11,62 @@ import certificateRoutes from './routes/certificates.js';
 import skillRoutes from './routes/skills.js';
 import resumeRoutes from './routes/resumes.js';
 import connectDB from './config/db.js';
-import fs from 'fs'; // Although fs is imported, it's not used in this snippet.
+import fs from 'fs';
 
-dotenv.config(); // Load environment variables from .env
-
-const __dirname = path.resolve(); // This is correctly set up for ES Modules
-
+dotenv.config();
+const __dirname = path.resolve();
 const app = express();
 const server = createServer(app);
 
-// Define your allowed origins as an array
-// IMPORTANT: Be careful with process.env.CLIENT_URL.
-// If it only contains one URL, you need to add localhost manually for development.
-// A better approach is to have a comma-separated list in your .env or multiple env vars.
-const allowedOrigins = [
-    'http://localhost:5173', // Your React/Vite development server
-    'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app', // Your Vercel deployed client
-    // Add your Render server URL if it also acts as a client that needs to make requests to itself,
-    // though usually a backend doesn't make requests to its own origin.
-    // 'https://portfolio-server-9qz2.onrender.com' // Example if needed, but usually not for client access
-];
+// Remove trailing slash from client URL if present
+const clientUrl = process.env.CLIENT_URL?.endsWith('/') 
+  ? process.env.CLIENT_URL.slice(0, -1)
+  : process.env.CLIENT_URL || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app';
 
-// Configure CORS middleware for Express routes
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        // or if the origin is in our allowedOrigins list.
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+const io = new Server(server, {
+  cors: {
+    origin: clientUrl,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
-}));
-
-// Configure CORS for Socket.io
-const io = new Server(server, {
-    cors: {
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS for Socket.IO'));
-            }
-        },
-        methods: ['GET', 'POST'], // Socket.IO typically uses GET and POST for polling/websocket handshake
-        credentials: true,
-    },
+  },
 });
 
-// Middleware for parsing JSON and cookies
+// Middleware
+app.use(cors({
+  origin: clientUrl,
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
 // Connect to MongoDB
 connectDB();
 
-// Routes - Corrected to use relative paths
-app.use('/auth', authRoutes);
-app.use('/projects', projectRoutes);
-app.use('/certificates', certificateRoutes);
-app.use('/skills', skillRoutes);
-app.use('/resumes', resumeRoutes);
+// Routes - use just the path portion, not full URL
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/skills', skillRoutes);
+app.use('/api/resumes', resumeRoutes);
 
-// Serve static assets in production (if you have a frontend build)
-// This part is crucial if your frontend is served by the same Express server in production.
-// If your frontend is deployed separately on Vercel, you might not need this here.
+// Serve static files if in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+  app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
-    // Serve index.html for all non-API routes
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-    });
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+  });
 }
 
-
-// Socket.io connection handling
+// Socket.io
 io.on('connection', (socket) => {
-    console.log(`Socket connected: ${socket.id}`);
-    socket.on('disconnect', () => {
-        console.log(`Socket disconnected: ${socket.id}`);
-    });
-    // Add any other Socket.IO event listeners here
+  console.log('A user connected');
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
 
-// Make io accessible to routes (if needed for emitting events from API routes)
+// Make io accessible to routes
 app.set('io', io);
 
 const PORT = process.env.PORT || 5000;
