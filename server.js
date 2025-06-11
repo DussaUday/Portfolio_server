@@ -44,10 +44,8 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/resumes', resumeRoutes);
 
 // Serve frontend
-const staticPath = path.join(__dirname, 'frontend', 'dist');
+const staticPath = path.join(__dirname, '../frontend/dist');
 const indexPath = path.join(staticPath, 'index.html');
-
-// Log if index.html is missing
 if (!fs.existsSync(indexPath)) {
   console.error(`Error: index.html not found at ${indexPath}. Ensure frontend is built.`);
 }
