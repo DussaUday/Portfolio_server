@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon server.js",
-    "build" : "npm install --prefix ./frontend && npm run build --prefix ./frontend && npm install"
+    "build": "npm install --prefix ./frontend && npm run build --prefix ./frontend && npm install"
   },
   "type": "module",
   "keywords": [],
@@ -28,6 +28,7 @@
     "graphql": "^16.10.0",
     "graphql-subscriptions": "^3.0.0",
     "graphql-ws": "^6.0.4",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.1",

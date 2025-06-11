@@ -11,17 +11,13 @@ import certificateRoutes from './routes/certificates.js';
 import skillRoutes from './routes/skills.js';
 import resumeRoutes from './routes/resumes.js';
 import connectDB from './config/db.js';
-import fs from 'fs';
 
 dotenv.config();
 const __dirname = path.resolve();
 const app = express();
 const server = createServer(app);
 
-// Remove trailing slash from client URL if present
-const clientUrl = process.env.CLIENT_URL?.endsWith('/') 
-  ? process.env.CLIENT_URL.slice(0, -1)
-  : process.env.CLIENT_URL || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app';
+const clientUrl = process.env.CLIENT_URL?.replace(/\/$/, '') || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app';
 
 const io = new Server(server, {
   cors: {
@@ -42,19 +38,28 @@ app.use(cookieParser());
 // Connect to MongoDB
 connectDB();
 
-// Routes - use just the path portion, not full URL
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/resumes', resumeRoutes);
 
-// Serve static files if in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'frontend/dist')));
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Portfolio server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/dist')));
+  
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+    res.sendFile(path.join(__dirname, 'client/dist/index.html'));
   });
 }
 
@@ -66,8 +71,10 @@ io.on('connection', (socket) => {
   });
 });
 
-// Make io accessible to routes
 app.set('io', io);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`CORS configured for: ${clientUrl}`);
+});
