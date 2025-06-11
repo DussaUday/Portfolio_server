@@ -81,10 +81,10 @@ app.use('/resumes', resumeRoutes);
 // If your frontend is deployed separately on Vercel, you might not need this here.
 if (process.env.NODE_ENV === 'production') {
     // Assuming your frontend build is in a 'dist' or 'build' folder relative to server.js
-    app.use(express.static(path.join(__dirname, 'client/dist'))); // Adjust 'client/dist' if your build folder is different
+    app.use(express.static(path.join(__dirname, 'https://portfolio-z0f2.onrender.com/dist'))); // Adjust 'client/dist' if your build folder is different
 
     app.get('*', (req, res) =>
-        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
+        res.sendFile(path.resolve(__dirname, 'https://portfolio-z0f2.onrender.com','dist', 'index.html'))
     );
 } else {
     app.get('/', (req, res) => {
