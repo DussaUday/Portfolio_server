@@ -43,27 +43,6 @@ app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/certif
 app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/skills', skillRoutes);
 app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/resumes', resumeRoutes);
 
-// Serve frontend
-const staticPath = path.join(__dirname, 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/dist');
-const indexPath = path.join(staticPath, 'index.html');
-if (!fs.existsSync(indexPath)) {
-  console.error(`Error: index.html not found at ${indexPath}. Ensure frontend is built.`);
-}
-
-app.use(express.static(staticPath));
-
-app.get('*', (req, res) => {
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath, (err) => {
-      if (err) {
-        console.error(`Error serving index.html: ${err.message}`);
-        res.status(500).json({ error: 'Failed to serve frontend' });
-      }
-    });
-  } else {
-    res.status(404).json({ error: 'Frontend not found. Please build the frontend.' });
-  }
-});
 
 // Socket.io
 io.on('connection', (socket) => {
