@@ -19,7 +19,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
@@ -27,7 +27,7 @@ const io = new Server(server, {
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/',
   credentials: true,
 }));
 app.use(express.json());
@@ -37,11 +37,11 @@ app.use(cookieParser());
 connectDB();
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/certificates', certificateRoutes);
-app.use('/api/skills', skillRoutes);
-app.use('/api/resumes', resumeRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/auth', authRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/projects', projectRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/certificates', certificateRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/skills', skillRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/resumes', resumeRoutes);
 
 // Serve frontend
 const staticPath = path.join(__dirname, '../frontend/dist');
