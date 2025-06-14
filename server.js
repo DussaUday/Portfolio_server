@@ -9,7 +9,6 @@ import authRoutes from './routes/auth.js';
 import projectRoutes from './routes/projects.js';
 import certificateRoutes from './routes/certificates.js';
 import skillRoutes from './routes/skills.js';
-import resumeRoutes from './routes/resumes.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
@@ -17,7 +16,7 @@ const __dirname = path.resolve();
 const app = express();
 const server = createServer(app);
 
-const clientUrl = process.env.CLIENT_URL?.replace(/\/$/, '') || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app';
+const clientUrl = process.env.CLIENT_URL?.replace(/\/$/, '') || 'https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app' || 'http://localhost:5173';
 
 const io = new Server(server, {
   cors: {
@@ -39,11 +38,10 @@ app.use(cookieParser());
 connectDB();
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/certificates', certificateRoutes);
-app.use('/api/skills', skillRoutes);
-app.use('/api/resumes', resumeRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/auth', authRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/projects', projectRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/certificates', certificateRoutes);
+app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/skills', skillRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
