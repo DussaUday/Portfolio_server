@@ -38,7 +38,7 @@ app.use(cookieParser());
 connectDB();
 
 // API Routes
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/skills', skillRoutes);
