@@ -38,10 +38,10 @@ app.use(cookieParser());
 connectDB();
 
 // API Routes
-app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/auth', authRoutes);
-app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/projects', projectRoutes);
-app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/certificates', certificateRoutes);
-app.use('https://uday469-git-main-dussa-uday-krishnas-projects.vercel.app/api/skills', skillRoutes);
+app.use('/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/skills', skillRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
